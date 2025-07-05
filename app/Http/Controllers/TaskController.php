@@ -16,7 +16,15 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::where('user_id', Auth::id())->orderBy('deadline', 'asc')->get();
-        return view('tasks.index', compact('tasks'));
+        $total = $tasks->count();
+        $done = $tasks->where('status', true)->count();
+        $not_done = $tasks->where('status', false)->count();
+        $overdue = $tasks->where('status', false)
+            ->where('deadline', '<', now())
+            ->whereNotNull('deadline')
+            ->count();
+        $progress = $total > 0 ? round(($done / $total) * 100) : 0;
+        return view('tasks.index', compact('tasks', 'total', 'done', 'not_done', 'overdue', 'progress'));
     }
 
     /**

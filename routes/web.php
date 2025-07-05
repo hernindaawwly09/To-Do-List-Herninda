@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\DailyNoteController;
 use Illuminate\Support\Facades\Route;
 
 Route::resource('tasks', TaskController::class)->middleware(['auth']);
+Route::resource('daily-notes', DailyNoteController::class)->middleware(['auth']);
+Route::get('/tasks/calendar', [TaskController::class, 'calendar'])->middleware(['auth']);
 
-Route::get('/', function () {
-    return redirect()->route('tasks.index');
-});
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +32,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/daily-reflections', [\App\Http\Controllers\DailyReflectionController::class, 'index'])->name('daily-reflections.index');
+    Route::post('/daily-reflections', [\App\Http\Controllers\DailyReflectionController::class, 'store'])->name('daily-reflections.store');
+    Route::get('/calendar', [\App\Http\Controllers\CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/api/calendar-events', [\App\Http\Controllers\CalendarController::class, 'apiEvents'])->name('calendar.api');
 });
 
 Route::get('/test-log', function () {
